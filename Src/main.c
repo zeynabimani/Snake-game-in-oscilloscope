@@ -123,21 +123,11 @@ void showSnake(struct Snake s){
 			  for(l = 0; l < 100; l++){
 				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s.length[k].x + l);
 			  }
-			  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y + 1);
-			  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y + 2);
-			  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y);
-			  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y - 1);
-			  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y - 2);
 		  }
 		  else{
 				  for(l = 0; l < 100; l++){
 					  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y + l);
 				  }
-				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s.length[k].x + 1);
-				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s.length[k].x + 2);
-				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s.length[k].x);
-				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s.length[k].x - 1);
-				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s.length[k].x - 2);
 		  }
 
 	  }
