@@ -89,25 +89,25 @@ int randomy() {
 }
 
 void table() {
-    	for(i = 48; i <= 4000; i++){
+    	for(i = 0; i <= 4000; i++){
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,4000);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,4001);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,4002);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,i);
 		}
-		for(i = 48; i <= 4000; i++){
+		for(i = 0; i <= 4000; i++){
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,i);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,4000);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,4001);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,4002);
 		}
-		for(i = 48; i <= 4000; i++){
+		for(i = 0; i <= 4000; i++){
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,2);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,1);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,0);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,i);
 		}
-		for(i = 48; i <= 4000; i++){
+		for(i = 0; i <= 4000; i++){
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,i);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,2);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,1);
@@ -186,37 +186,31 @@ void Apple() {
 			break;
 		}
 	} while (sw == 1);
-//	for(int i = -3; i < 3; i++){
-//		for(int j = -3; j < 3; j++){
-//			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
-//			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
-//		}
-//	}
 }
 
 int eatApple() {
-			if(last == 1 || last == 2){
-				for(int o = -50; o <= 50; o++){
-					if (s1.length[0].x + o == xa){
-						for(int p = -50; p <= 50; p++){
-							if(s1.length[0].y + p == ya){
-								return 1;
-							}
-						}
+	if(last == 1 || last == 2){
+		for(int o = -100; o <= 100; o++){
+			if (s1.length[0].x + o == xa){
+				for(int p = -50; p <= 50; p++){
+					if(s1.length[0].y + p == ya){
+						return 1;
 					}
 				}
 			}
-			else {
-				for(int o = -50; o <= 50; o++){
-					if (s1.length[0].y + o == ya){
-						for(int p = -50; p <= 50; p++){
-							if(s1.length[0].x + p == xa){
-								return 1;
-							}
-						}
+		}
+	}
+	else {
+		for(int o = -100; o <= 100; o++){
+			if (s1.length[0].y + o == ya){
+				for(int p = -50; p <= 50; p++){
+					if(s1.length[0].x + p == xa){
+						return 1;
 					}
 				}
 			}
+		}
+	}
 	return 0;
 }
 
@@ -225,6 +219,7 @@ void readADC(){
     valueX = (HAL_ADC_GetValue(&hadc1) - 2048.0) / 2048.0;
     valueY = (HAL_ADC_GetValue(&hadc2) - 2048.0) / 2048.0;
 }
+
 
 /* USER CODE END PFP */
 
@@ -291,7 +286,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
+  while (alive == 1)
   {
 
   /* USER CODE END WHILE */
@@ -300,8 +295,8 @@ int main(void)
 
 	  table(); // table
 	  readADC();
-	  for(int i = -3; i < 3; i++){  //apple
-		for(int j = -3; j < 3; j++){
+	  for(int i = -10; i < 10; i++){  //apple
+		for(int j = -10; j < 10; j++){
 				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
 				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
 			}
