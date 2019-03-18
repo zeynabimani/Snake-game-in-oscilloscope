@@ -63,7 +63,6 @@ int alive = 1;
 int xa, ya;
 int A;
 int last = 4;
-uint8_t start = 1;
 
 /* USER CODE END PV */
 
@@ -102,32 +101,31 @@ void table() {
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,4002);
 		}
 		for(i = 48; i <= 4000; i++){
-			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,48);
-			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,47);
-			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,46);
+			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,2);
+			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,1);
+			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,0);
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,i);
 		}
 		for(i = 48; i <= 4000; i++){
 			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,i);
-			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,48);
-			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,47);
-			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,46);
+			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,2);
+			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,1);
+			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,0);
 		}
 }
 
 void showSnake(struct Snake s){
 	  // chap e mar e avvalie
 	  for (k = (s1.L - 1); k > 0 ; k--) {
-		  if(start == 1 || last == 3 || last == 4){
-			  start = 0;
+		  if(last == 3 || last == 4){
 			  for(l = 0; l < 100; l++){
 				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s.length[k].x + l);
 			  }
 		  }
 		  else{
-				  for(l = 0; l < 100; l++){
-					  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y + l);
-				  }
+			  for(l = 0; l < 100; l++){
+				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y + l);
+			  }
 		  }
 
 	  }
@@ -248,138 +246,96 @@ int main(void)
 
 
 	  table(); // table
-//	  showSnake(s1);
 	  readADC();
-  	 for(int i = -7; i < 7; i++){  //apple
-  		for(int j = -7; j < 7; j++){
-  				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
-  				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
-  			}
-  	 }
-	  	  if (valueX >= -0.2 && valueX <= 0.2 && valueY >= -0.2 && valueY <= 0.2) {
-	             if ((s1.length[0].x == (xa - 7) || (s1.length[0].x == (xa + 7))) && ((s1.length[0].y == ya - 7) || (s1.length[0].y == ya + 7))) {
-	                 s1.L++;
-	                 showSnake(s1);
-	                 Apple(s1);
-	             }
-	             for (i = 524; i >= 1; i--) {  //shifting
-	             		s1.length[i].x = s1.length[i - 1].x;
-	             		s1.length[i].y = s1.length[i - 1].y;
-	             }
-	             if (last == 1) {                   // up
-	            	 s1.length[0].y+=100;
-	             }
-	             if (last == 2) {                  // down
-	            	 s1.length[0].y-=100;
-	             }
-	             if (last == 3) {                   //  left
-	            	 s1.length[0].x-=100;
-	             }
-	             if (last == 4) {                    //  right
-	            	 s1.length[0].x+=100;
-	             }
-	             alive = die(s1);
-	             showSnake(s1);
-//	         	 for(int i = -7; i < 7; i++){  //apple
-//	         		for(int j = -7; j < 7; j++){
-//	         				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
-//	         				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
-//	         			}
-//
-//	         	 }
-	         }
-	  	  	 else{
-//	         	 for(int i = -7; i < 7; i++){  //apple
-//	         		for(int j = -7; j < 7; j++){
-//	         				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
-//	         				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
-//	         			}
-//	         	 }
-           	     if ((s1.length[0].x == (xa - 5) || (s1.length[0].x == (xa + 5))) && ((s1.length[0].y == ya - 5) || (s1.length[0].y == ya + 5))) {
-					 s1.L++;
-					 showSnake(s1);
-					 Apple(s1);
+	  for(int i = -7; i < 7; i++){  //apple
+		for(int j = -7; j < 7; j++){
+				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
+				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
+			}
+	  }
+	  if (valueX >= -0.22 && valueX <= 0.22 && valueY >= -0.22 && valueY <= 0.22) {
+			 if ((s1.length[0].x == (xa - 7) || (s1.length[0].x == (xa + 7))) && ((s1.length[0].y == ya - 7) || (s1.length[0].y == ya + 7))) {
+				 s1.L++;
+				 showSnake(s1);
+				 Apple(s1);
+			 }
+			 for (i = 524; i >= 1; i--) {  //shifting
+					s1.length[i].x = s1.length[i - 1].x;
+					s1.length[i].y = s1.length[i - 1].y;
+			 }
+			 if (last == 1) {                   // up
+				 s1.length[0].y+=100;
+			 }
+			 if (last == 2) {                  // down
+				 s1.length[0].y-=100;
+			 }
+			 if (last == 3) {                   //  left
+				 s1.length[0].x-=100;
+			 }
+			 if (last == 4) {                    //  right
+				 s1.length[0].x+=100;
+			 }
+			 alive = die(s1);
+			 showSnake(s1);
+		 }
+		 else{
+			 if ((s1.length[0].x == (xa - 5) || (s1.length[0].x == (xa + 5))) && ((s1.length[0].y == ya - 5) || (s1.length[0].y == ya + 5))) {
+				 s1.L++;
+				 showSnake(s1);
+				 Apple(s1);
+			 }
+			 for (i = 524; i >= 1; i--) {  //shifting
+					s1.length[i].x = s1.length[i - 1].x;
+					s1.length[i].y = s1.length[i - 1].y;
+			 }
+			  if (valueY > 0.2  && valueX >= 0 && valueX < 0.2 && last != 2) {// up
+				  s1.length[0].y+=100;
+				  last = 1;
+			  }
+			  else if (valueY < -0.2 && valueX >= 0 && valueX < 0.2 && last != 1) {// down
+				  s1.length[0].y-=100;
+				  last = 2;
+			  }
+			  else if (valueX > 0.2  && valueY >= 0 && valueY < 0.25 && last != 4) {// left
+				  s1.length[0].x-=100;
+				  last = 3;
+			  }
+			  else if (valueX < -0.2 && valueY >= -0.25 && valueY < 0.25 && last != 3) { // right
+				  s1.length[0].x+=100;
+				  last = 4;
+			  }
+			  else{
+				 if (last == 1) {                   // up
+					 s1.length[0].y+=100;
 				 }
-	              if (valueY > 0.2  && valueX >= 0 && valueX < 0.2 && last != 2) {// up
-	                  for (i = 524; i >= 1; i--) {  //shifting
-	  	             		s1.length[i].x = s1.length[i - 1].x;
-	  	             		s1.length[i].y = s1.length[i - 1].y;
-	  	            }
-	                  s1.length[0].y+=100;
-	                  last = 1;
-	                  alive = die(s1);
-	                  showSnake(s1);
-	              }
-	              else if (valueY < -0.2 && valueX >= 0 && valueX < 0.2 && last != 1) {// down
-	                  for (i = 524; i >= 1; i--) {  //shifting
-	  	             		s1.length[i].x = s1.length[i - 1].x;
-	  	             		s1.length[i].y = s1.length[i - 1].y;
-	  	            }
+				 if (last == 2) {                  // down
+					 s1.length[0].y-=100;
+				 }
+				 if (last == 3) {                   //  left
+					 s1.length[0].x-=100;
+				 }
+				 if (last == 4) {                    //  right
+					 s1.length[0].x+=100;
+				 }
+			  }
+			 alive = die(s1);
+			 showSnake(s1);
+		  }
 
-	                  s1.length[0].y-=100;
-	                  last = 2;
-	                  alive = die(s1);
-	                  showSnake(s1);
-	              }
-	              else if (valueX > 0.2  && valueY >= 0 && valueY < 0.25 && last != 4) {// left
-	                  for (i = 524; i >= 1; i--) {  //shifting
-	  	             		s1.length[i].x = s1.length[i - 1].x;
-	  	             		s1.length[i].y = s1.length[i - 1].y;
-	  	            }
-
-	                  s1.length[0].x-=100;
-	                  last = 3;
-	                  alive = die(s1);
-	                  showSnake(s1);
-	              }
-	              else if (valueX < -0.2 && valueY >= -0.25 && valueY < 0.25 && last != 3) { // right
-	                  for (i = 524; i >= 1; i--) {  //shifting
-	  	             		s1.length[i].x = s1.length[i - 1].x;
-	  	             		s1.length[i].y = s1.length[i - 1].y;
-	  	              }
-
-	                  s1.length[0].x+=100;
-	                  last = 4;
-	                  alive = die(s1);
-	                  showSnake(s1);
-	              }
-	              else{
-					 for (i = 524; i >= 1; i--) {  //shifting
-							s1.length[i].x = s1.length[i - 1].x;
-							s1.length[i].y = s1.length[i - 1].y;
-					 }
-					 if (last == 1) {                   // up
-						 s1.length[0].y+=100;
-					 }
-					 if (last == 2) {                  // down
-						 s1.length[0].y-=100;
-					 }
-					 if (last == 3) {                   //  left
-						 s1.length[0].x-=100;
-					 }
-					 if (last == 4) {                    //  right
-						 s1.length[0].x+=100;
-					 }
-					 alive = die(s1);
-					 showSnake(s1);
-
-	              }
-	          }
-
-	  	      for (i = 0; i < s1.L; i++) {
-	  	    	  if(s1.length[i].x >= 4000){
-	  	    		s1.length[i].x = 47;
-	  	    	  }
-	  	    	  if(s1.length[i].y >= 4000){
-	  	    		s1.length[i].y = 47;
-	  	    	  }
-	  	    	  if(s1.length[i].x <= 45){
-					s1.length[i].x = 4000;
-				  }
-				  if(s1.length[i].y <= 45){
-					s1.length[i].y = 4000;
-				  }
-	  		 }
+		  for (i = 0; i < s1.L; i++) {
+			  if(s1.length[i].x >= 4000){
+				s1.length[i].x -= 3500;
+			  }
+			  if(s1.length[i].y >= 4000){
+				s1.length[i].y -= 3500;
+			  }
+			  if(s1.length[i].x <= 2){
+				s1.length[i].x += 3500;
+			  }
+			  if(s1.length[i].y <= 2){
+				s1.length[i].y += 3500;
+			  }
+		 }
   }
   /* USER CODE END 3 */
 
