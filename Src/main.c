@@ -63,6 +63,7 @@ int alive = 1;
 int xa, ya;
 int A;
 int last = 4;
+int check;
 
 /* USER CODE END PV */
 
@@ -81,10 +82,10 @@ struct Snake {
 };
 
 int randomx() {
-	return(rand() % 3750 + 150);
+	return(rand() % 3100 + 300);
 }
 int randomy() {
-	return(rand() % 3750 + 150);
+	return(rand() % 3100 + 300);
 }
 
 void table() {
@@ -114,56 +115,109 @@ void table() {
 		}
 }
 
-void showSnake(struct Snake s){
+void showSnake(){
 	  // chap e mar e avvalie
 	  for (k = (s1.L - 1); k > 0 ; k--) {
 		  if(last == 3 || last == 4){
 			  for(l = 0; l < 100; l++){
-				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s.length[k].x + l);
+				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s1.length[k].x + l);
+				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s1.length[k].y + l);
 			  }
 		  }
 		  else{
 			  for(l = 0; l < 100; l++){
-				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s.length[k].y + l);
+				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,s1.length[k].y + l);
+				  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,s1.length[k].x + l);
 			  }
 		  }
 
 	  }
 }
 
-void shift(struct Snake s) {   //we need & or * hereh for changeing length
+void shift() {
 	int i;
 	for (i = 524; i >= 1; i--) {
-		s.length[i].x = s.length[i - 1].x;
-		s.length[i].y = s.length[i - 1].y;
+		s1.length[i].x = s1.length[i - 1].x;
+		s1.length[i].y = s1.length[i - 1].y;
 	}
 }
 
-int die(struct Snake mine) {
+int die() {
 	int i;
-	for (i = 1; i <= mine.L; i++) {
-		if (mine.length[0].x == mine.length[i].x && mine.length[0].y == mine.length[i].y) return 0;
+	for (i = 1; i <= s1.L; i++) {
+		if (s1.length[0].x == s1.length[i].x && s1.length[0].y == s1.length[i].y) return 0;
 	}
 	return 1;
 }
 
-void Apple(struct Snake s1) {
+void Apple() {
 	int sw, m;
 	do {
 		sw = 0;
 		xa = randomx();
 		ya = randomy();
 		for (m = 0; m < s1.L; m++) {
-			if (s1.length[m].x == xa && s1.length[m].y == ya) sw = 1;
-
+			if(last == 1 || last == 2){
+				for(int k = -100; k <= 100; k++){
+					if (s1.length[m].x + k == xa){
+						for(int l = - 10; l <= 10; l++){
+							if(s1.length[m].y + l == ya){
+								sw = 1;
+								break;
+							}
+						}
+					}
+					break;
+				}
+			}
+			else {
+				for(int k = -100; k <= 100; k++){
+					if (s1.length[m].y + k == ya){
+						for(int l = - 10; l <= 10; l++){
+							if(s1.length[m].x + l == xa){
+								sw = 1;
+								break;
+							}
+						}
+					}
+					break;
+				}
+			}
+			break;
 		}
 	} while (sw == 1);
-	for(int i = -7; i < 7; i++){
-		for(int j = -7; j < 7; j++){
-			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
-			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
-		}
-	}
+//	for(int i = -3; i < 3; i++){
+//		for(int j = -3; j < 3; j++){
+//			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
+//			HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
+//		}
+//	}
+}
+
+int eatApple() {
+			if(last == 1 || last == 2){
+				for(int o = -50; o <= 50; o++){
+					if (s1.length[0].x + o == xa){
+						for(int p = -50; p <= 50; p++){
+							if(s1.length[0].y + p == ya){
+								return 1;
+							}
+						}
+					}
+				}
+			}
+			else {
+				for(int o = -50; o <= 50; o++){
+					if (s1.length[0].y + o == ya){
+						for(int p = -50; p <= 50; p++){
+							if(s1.length[0].x + p == xa){
+								return 1;
+							}
+						}
+					}
+				}
+			}
+	return 0;
 }
 
 
@@ -212,7 +266,7 @@ int main(void)
   MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
 
-
+  srand(time(NULL));
 
   	s1.L = 5;
 	for(j = 4; j >= 0; j--){
@@ -244,25 +298,23 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-
 	  table(); // table
 	  readADC();
-	  for(int i = -7; i < 7; i++){  //apple
-		for(int j = -7; j < 7; j++){
+	  for(int i = -3; i < 3; i++){  //apple
+		for(int j = -3; j < 3; j++){
 				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,xa + i);
 				HAL_DAC_SetValue(&hdac,DAC_CHANNEL_2,DAC_ALIGN_12B_R,ya + j);
 			}
 	  }
 	  if (valueX >= -0.22 && valueX <= 0.22 && valueY >= -0.22 && valueY <= 0.22) {
-			 if ((s1.length[0].x == (xa - 7) || (s1.length[0].x == (xa + 7))) && ((s1.length[0].y == ya - 7) || (s1.length[0].y == ya + 7))) {
+			 check = eatApple();
+			 if(check == 1){
 				 s1.L++;
 				 showSnake(s1);
 				 Apple(s1);
+				 check = 0;
 			 }
-			 for (i = 524; i >= 1; i--) {  //shifting
-					s1.length[i].x = s1.length[i - 1].x;
-					s1.length[i].y = s1.length[i - 1].y;
-			 }
+			 shift();
 			 if (last == 1) {                   // up
 				 s1.length[0].y+=100;
 			 }
@@ -279,15 +331,14 @@ int main(void)
 			 showSnake(s1);
 		 }
 		 else{
-			 if ((s1.length[0].x == (xa - 5) || (s1.length[0].x == (xa + 5))) && ((s1.length[0].y == ya - 5) || (s1.length[0].y == ya + 5))) {
+			 check = eatApple();
+			 if(check == 1){
 				 s1.L++;
 				 showSnake(s1);
 				 Apple(s1);
+				 check = 0;
 			 }
-			 for (i = 524; i >= 1; i--) {  //shifting
-					s1.length[i].x = s1.length[i - 1].x;
-					s1.length[i].y = s1.length[i - 1].y;
-			 }
+			 shift();
 			  if (valueY > 0.2  && valueX >= 0 && valueX < 0.2 && last != 2) {// up
 				  s1.length[0].y+=100;
 				  last = 1;
@@ -324,16 +375,16 @@ int main(void)
 
 		  for (i = 0; i < s1.L; i++) {
 			  if(s1.length[i].x >= 4000){
-				s1.length[i].x -= 3500;
+				s1.length[i].x -= 4000;
 			  }
 			  if(s1.length[i].y >= 4000){
-				s1.length[i].y -= 3500;
+				s1.length[i].y -= 4000;
 			  }
 			  if(s1.length[i].x <= 2){
-				s1.length[i].x += 3500;
+				s1.length[i].x += 4000;
 			  }
 			  if(s1.length[i].y <= 2){
-				s1.length[i].y += 3500;
+				s1.length[i].y += 4000;
 			  }
 		 }
   }
